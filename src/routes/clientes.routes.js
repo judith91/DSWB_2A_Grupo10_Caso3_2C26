@@ -8,12 +8,14 @@ const {
     obtenerClientePorId,
     crearCliente,
     actualizarCliente,
-    eliminarCliente
+    eliminarCliente,
+    mostrarClientesVista
 
 } = require("../controllers/clientes.controllers");
 
 
 // rutas CRUD
+router.get("/vista", mostrarClientesVista);
 router.get("/", obtenerClientes);         // GET /clientes  
 router.get("/:id", obtenerClientePorId);  // GET /clientes/:id
 router.post("/", crearCliente);           // POST /clientes

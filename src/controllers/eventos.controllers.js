@@ -192,10 +192,19 @@ const eliminarEvento = (req, res) => {
   });
 };
 
+//Mostrar vista
+const mostrarEventosVista = (req, res) => {
+  const eventos = leerEventos();
+  const salas = leerSalas();
+
+  res.render("eventos", { eventos, salas });
+};
+
 module.exports = {
   obtenerEventos,
   obtenerEventoPorId,
   crearEvento,
   actualizarEvento,
   eliminarEvento,
+  mostrarEventosVista,
 };

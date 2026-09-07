@@ -7,8 +7,10 @@ const {
   crearEvento,
   actualizarEvento,
   eliminarEvento,
+  mostrarEventosVista,
 } = require("../controllers/eventos.controllers");
 
+router.get("/vista", mostrarEventosVista);
 router.get("/", obtenerEventos);
 router.get("/:id", obtenerEventoPorId);
 router.post("/", crearEvento);

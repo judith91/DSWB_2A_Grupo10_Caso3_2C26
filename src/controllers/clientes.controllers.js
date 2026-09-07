@@ -127,12 +127,19 @@ const eliminarCliente = (req, res) => {
     });
 };
 
+//Mostrar clientes
+const mostrarClientesVista = (req, res) => {
+  const clientes = leerClientes();
+
+  res.render("clientes", { clientes });
+};
+
 // exportar funciones
 module.exports = {
     obtenerClientes,
     obtenerClientePorId,
     crearCliente,
     actualizarCliente,
-    eliminarCliente
-
+    eliminarCliente,
+    mostrarClientesVista,
 };
