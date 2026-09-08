@@ -92,16 +92,7 @@ const crearEvento = (req, res) => {
     });
   }
 
-  // Validar que la fecha sea válida
-  const año = Number(fecha.substring(0, 4));
-
-  if (año < 2026) {
-    return res.status(400).json({
-      mensaje: "La fecha no puede ser anterior al año 2026",
-    });
-  }
-
-  // Validar que no haya otro evento en la misma sala, fecha y hora
+   // Validar que no haya otro evento en la misma sala, fecha y hora
   const conflicto = eventos.find(
     (evento) =>
       evento.salaId === idSala &&
