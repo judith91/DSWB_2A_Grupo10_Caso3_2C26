@@ -20,6 +20,10 @@ app.get("/", (req, res) => {
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+    res.locals.currentPath = req.path;
+    next();
+});
 
 // Rutas
 app.use("/eventos", eventoRoutes);

@@ -266,7 +266,8 @@ body {
 }
 
 .campo input,
-.campo select {
+.campo select,
+.campo textarea {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid #cbd5e1;
@@ -276,8 +277,13 @@ body {
   background-color: var(--blanco);
 }
 
+.campo textarea {
+  resize: none;
+}
+
 .campo input:focus,
-.campo select:focus {
+.campo select:focus,
+.campo textarea:focus {
   outline: 2px solid #c4b5fd;
   border-color: var(--primario);
 }

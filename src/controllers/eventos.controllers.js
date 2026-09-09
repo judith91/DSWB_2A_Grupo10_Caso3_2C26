@@ -71,10 +71,10 @@ const crearEvento = (req, res) => {
   const eventos = leerEventos();
   const salas = leerSalas();
 
-  const { titulo, fecha, hora, salaId, estado } = req.body;
+  const { titulo, descripcion, fecha, hora, salaId, estado } = req.body;
 
   // Validar datos obligatorios
-  if (!titulo || !fecha || !hora || !salaId || !estado) {
+  if (!titulo || !descripcion || !fecha || !hora || !salaId || !estado) {
     return res.status(400).json({
       mensaje: "Faltan datos obligatorios",
     });
@@ -125,7 +125,7 @@ const crearEvento = (req, res) => {
   const nuevoEvento = new Evento(
     nuevoId,
     titulo,
-    "",
+    descripcion,
     fecha,
     hora,
     idSala,
