@@ -71,10 +71,10 @@ const crearEvento = (req, res) => {
   const eventos = leerEventos();
   const salas = leerSalas();
 
-  const { titulo, descripcion, fecha, hora, salaId } = req.body;
+  const { titulo, fecha, hora, salaId, estado } = req.body;
 
   // Validar datos obligatorios
-  if (!titulo || !descripcion || !fecha || !hora || !salaId) {
+  if (!titulo || !fecha || !hora || !salaId || !estado) {
     return res.status(400).json({
       mensaje: "Faltan datos obligatorios",
     });
@@ -89,6 +89,14 @@ const crearEvento = (req, res) => {
   if (!sala) {
     return res.status(404).json({
       mensaje: "La sala no existe",
+    });
+  }
+
+  const estadosValidos = ["activo", "lleno", "finalizado"];
+
+  if (!estadosValidos.includes(estado)) {
+    return res.status(400).json({
+      mensaje: "El estado del evento no es válido",
     });
   }
 
@@ -114,20 +122,23 @@ const crearEvento = (req, res) => {
     ) + 1;
 
   // Crear evento nuevo
-  // Todo evento nuevo comienza como activo
   const nuevoEvento = new Evento(
     nuevoId,
     titulo,
-    descripcion,
+    "",
     fecha,
     hora,
     idSala,
-    "activo"
+    estado
   );
 
   eventos.push(nuevoEvento);
 
   guardarEventos(eventos);
+
+  if (req.headers.accept?.includes("text/html")) {
+    return res.redirect("/eventos/vista");
+  }
 
   res.status(201).json({
     mensaje: "Evento creado",
@@ -183,12 +194,18 @@ const eliminarEvento = (req, res) => {
   });
 };
 
-//Mostrar vista
+//Mostrar vistas
 const mostrarEventosVista = (req, res) => {
   const eventos = leerEventos();
   const salas = leerSalas();
 
   res.render("eventos", { eventos, salas });
+};
+
+const mostrarNuevoEventoVista = (req, res) => {
+  const salas = leerSalas();
+
+  res.render("nuevo_evento", { salas });
 };
 
 module.exports = {
@@ -198,4 +215,5 @@ module.exports = {
   actualizarEvento,
   eliminarEvento,
   mostrarEventosVista,
+  mostrarNuevoEventoVista,
 };

@@ -127,7 +127,7 @@ const eliminarCliente = (req, res) => {
     });
 };
 
-//Mostrar clientes
+//Mostrar vistas
 const mostrarClientesVista = (req, res) => {
   const clientes = leerClientes();
 

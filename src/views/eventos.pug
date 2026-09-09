@@ -1,11 +1,12 @@
 extends layout
 
 block content
-  .section-header
+  .section-header.section-header--acciones
     p.section-label PANEL DE EVENTOS
     h2.section-title Eventos disponibles
     p.section-description
       | Consultá los eventos disponibles y la información de cada uno.
+    a.boton.boton--nuevo(href="/eventos/nuevo") + Crear nuevo evento
 
   .eventos-grid
     each evento in eventos

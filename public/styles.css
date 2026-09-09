@@ -103,6 +103,11 @@ body {
   margin-bottom: 28px;
 }
 
+.section-header--acciones {
+  position: relative;
+  padding-right: 220px;
+}
+
 .section-label {
   margin: 0 0 6px;
   color: var(--primario);
@@ -220,6 +225,70 @@ body {
   background-color: var(--primario-oscuro);
 }
 
+.boton--nuevo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  white-space: nowrap;
+}
+
+.boton--secundario {
+  border: 1px solid var(--primario);
+  color: var(--primario);
+  background-color: transparent;
+}
+
+.boton--secundario:hover {
+  color: var(--blanco);
+  background-color: var(--primario);
+}
+
+/* Formulario de alta de eventos */
+.formulario-evento {
+  display: grid;
+  gap: 20px;
+  max-width: 680px;
+  padding: 28px;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  background-color: var(--blanco);
+  box-shadow: var(--sombra);
+}
+
+.campo {
+  display: grid;
+  gap: 7px;
+}
+
+.campo label {
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  color: var(--texto);
+  font: inherit;
+  background-color: var(--blanco);
+}
+
+.campo input:focus,
+.campo select:focus {
+  outline: 2px solid #c4b5fd;
+  border-color: var(--primario);
+}
+
+.formulario-evento__acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 4px;
+}
+
 /* Pie de página */
 .footer {
   display: flex;
@@ -249,5 +318,19 @@ body {
 
   .section-title {
     font-size: 1.6rem;
+  }
+
+  .section-header--acciones {
+    padding-right: 0;
+  }
+
+  .boton--nuevo {
+    position: static;
+    margin-top: 16px;
+  }
+
+  .formulario-evento__acciones {
+    align-items: stretch;
+    flex-direction: column;
   }
 }
