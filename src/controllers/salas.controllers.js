@@ -75,6 +75,10 @@ const crearSala = (req, res) => {
 
   guardarSalas(salas);
 
+  if (req.headers.accept?.includes("text/html")) {
+    return res.redirect("/salas/vista?creada=1");
+  }
+
   res.status(201).json({
     mensaje: "Sala creada",
     sala: nuevaSala,
@@ -131,10 +135,16 @@ const eliminarSala = (req, res) => {
 // Mostrar vistas
 const mostrarSalasVista = (req, res) => {
   const salas = leerSalas();
+  const mensaje = req.query.creada === "1"
+    ? "La sala se creó correctamente."
+    : null;
 
-  res.render("salas", { salas });
+  res.render("salas", { salas, mensaje });
 };
 
+const mostrarNuevaSalaVista = (req, res) => {
+  res.render("nueva_sala");
+}
 
 module.exports = {
   obtenerSalas,
@@ -143,4 +153,5 @@ module.exports = {
   actualizarSala,
   eliminarSala,
   mostrarSalasVista,
+  mostrarNuevaSalaVista,
 };

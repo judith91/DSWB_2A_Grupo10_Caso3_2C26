@@ -11,8 +11,10 @@ const {
   mostrarNuevoEventoVista,
 } = require("../controllers/eventos.controllers");
 
+//Vistas de eventos
 router.get("/vista", mostrarEventosVista);
 router.get("/nuevo", mostrarNuevoEventoVista);
+
 router.get("/", obtenerEventos);
 router.get("/:id", obtenerEventoPorId);
 router.post("/", crearEvento);

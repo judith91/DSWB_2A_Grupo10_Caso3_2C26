@@ -134,6 +134,10 @@ const mostrarClientesVista = (req, res) => {
   res.render("clientes", { clientes });
 };
 
+const mostrarNuevoClienteVista = (req, res) => {
+  res.render("nuevo_cliente");
+}
+
 // exportar funciones
 module.exports = {
     obtenerClientes,
@@ -142,4 +146,5 @@ module.exports = {
     actualizarCliente,
     eliminarCliente,
     mostrarClientesVista,
+    mostrarNuevoClienteVista,
 };

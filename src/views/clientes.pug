@@ -1,11 +1,12 @@
 extends layout
 
 block content
-  .section-header
+  .section-header.section-header--acciones
     p.section-label PANEL DE CLIENTES
     h2.section-title Clientes registrados
     p.section-description
       | Consultá la información de los clientes registrados.
+    a.boton.boton--nuevo(href="/clientes/nuevo") + Nuevo Cliente
 
   .eventos-grid
     each cliente in clientes
@@ -25,3 +26,7 @@ block content
             .dato
               span.dato__label Email
               span.dato__valor= cliente.email
+
+            .dato
+              span.dato__label Teléfono
+              span.dato__valor= cliente.telefono

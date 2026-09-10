@@ -147,6 +147,16 @@ body {
   box-shadow: 0 9px 20px rgba(0, 0, 0, 0.12);
 }
 
+.mensaje-exito {
+  margin: 0 0 24px;
+  padding: 12px 16px;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  color: var(--exito-texto);
+  background-color: var(--exito-fondo);
+  font-weight: 600;
+}
+
 .evento-card__header {
   display: flex;
   align-items: center;

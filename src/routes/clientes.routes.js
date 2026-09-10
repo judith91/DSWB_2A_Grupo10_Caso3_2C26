@@ -9,13 +9,16 @@ const {
     crearCliente,
     actualizarCliente,
     eliminarCliente,
-    mostrarClientesVista
+    mostrarClientesVista,
+    mostrarNuevoClienteVista,
 
 } = require("../controllers/clientes.controllers");
 
+//vistas de clientes
+router.get("/vista", mostrarClientesVista);
+router.get("/nuevo", mostrarNuevoClienteVista);
 
 // rutas CRUD
-router.get("/vista", mostrarClientesVista);
 router.get("/", obtenerClientes);         // GET /clientes  
 router.get("/:id", obtenerClientePorId);  // GET /clientes/:id
 router.post("/", crearCliente);           // POST /clientes

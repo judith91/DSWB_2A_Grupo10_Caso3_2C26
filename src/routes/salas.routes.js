@@ -7,6 +7,7 @@ const {
   actualizarSala,
   eliminarSala,
   mostrarSalasVista,
+  mostrarNuevaSalaVista,
 } = require("../controllers/salas.controllers");
 
 const router = express.Router();
@@ -14,7 +15,7 @@ const router = express.Router();
 
 // Vista de salas
 router.get("/vista", mostrarSalasVista);
-
+router.get("/nuevo", mostrarNuevaSalaVista);
 
 router.get("/", obtenerSalas);
 router.get("/:id", obtenerSalaPorId);
