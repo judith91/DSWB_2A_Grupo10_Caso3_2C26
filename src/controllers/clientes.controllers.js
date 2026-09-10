@@ -4,22 +4,16 @@ const path = require("path");
 const Cliente = require("../models/Cliente");
 const rutaArchivo = path.join(__dirname, "../../data/clientes.json");
 
-
 // función leer archivo
 const leerClientes = () => {
     const data = fs.readFileSync(rutaArchivo, "utf-8");
     return JSON.parse(data);
-
 };
 
 // función guardar archivo
 const guardarClientes = (clientes) => {
-    fs.writeFileSync(
-        rutaArchivo,
-        JSON.stringify(clientes, null, 2)
-    );
+  fs.writeFileSync(rutaArchivo, JSON.stringify(clientes, null, 2));
 };
-
 
 // GET ALL
 const obtenerClientes = (req, res) => {
@@ -27,111 +21,187 @@ const obtenerClientes = (req, res) => {
     res.json(clientes);
 };
 
-
 // GET BY ID
 const obtenerClientePorId = (req, res) => {
-    const clientes = leerClientes();
-    const id = parseInt(req.params.id);
-    const cliente = clientes.find(p => p.id === id);
+  const id = parseInt(req.params.id);
 
-    // Verificar si se encontró el cliente
-    if (!cliente) {
-        return res.status(404).json({
-            mensaje: "Cliente no encontrado"
-        });
-    }
+  if (isNaN(id)) {
+    return res.status(400).json({
+      mensaje: "El ID proporcionado no es válido",
+    });
+  }
 
-    res.json(cliente);
+  const clientes = leerClientes();
+  const cliente = clientes.find((p) => p.id === id);
+
+  if (!cliente) {
+    return res.status(404).json({
+      mensaje: "Cliente no encontrado",
+    });
+  }
+
+  res.json(cliente);
 };
-
 
 // CREATE
 const crearCliente = (req, res) => {
-    const clientes = leerClientes();
-    const { id, nombre, apellido, email, telefono} = req.body;
+  const clientes = leerClientes();
+  const { nombre, apellido, email, telefono} = req.body;
     
-    // Validar datos obligatorios
-    if (!nombre || !apellido || !email || !telefono) {
-        return res.status(400).json({
-        mensaje: "Faltan datos obligatorios",
-        });
+    // Validar datos obligatorios y cadenas vacías
+  if (
+      !nombre ||
+      !apellido ||
+      !email ||
+      !telefono ||
+      nombre.trim() === "" ||
+      apellido.trim() === "" ||
+      email.trim() === "" ||
+      telefono.trim() === ""
+    ) {
+      return res.status(400).json({
+        mensaje: "Faltan datos obligatorios o contienen valores vacíos",
+      });
     }
-    
-    // Generar un nuevo ID para el cliente
-    const nuevoid = clientes.length > 0 ? clientes[clientes.length - 1].id + 1 : 1;
+  const nomLimpio = nombre.trim();
+  const apeLimpio = apellido.trim();
+  const emailLimpio = email.trim().toLowerCase();
+  const telLimpio = telefono.trim();
 
-    const nuevoCliente = new Cliente(nuevoid, nombre, apellido, email, telefono);
-
-    clientes.push(nuevoCliente);
-
-    guardarClientes(clientes);
-
-    res.status(201).json({
-        mensaje: "Cliente creado exitosamente",
-        cliente: nuevoCliente
+  // Validar que el teléfono sea estrictamente numérico
+  const soloNumeros = /^\d+$/;
+  if (!soloNumeros.test(telLimpio)) {
+    return res.status(400).json({
+      mensaje: "El teléfono debe contener únicamente números",
     });
+  }
 
+  // Generar ID incremental seguro
+  const nuevoId =
+    clientes.reduce(
+      (mayor, cliente) => (cliente.id > mayor ? cliente.id : mayor),
+      0
+    ) + 1;
+
+  // Instanciar pasando directamente las variables procesadas
+  const nuevoCliente = new Cliente(
+    nuevoId,
+    nomLimpio,
+    apeLimpio,
+    emailLimpio,
+    telLimpio
+  );
+
+  clientes.push(nuevoCliente);
+  guardarClientes(clientes);
+
+  // Redirección si la solicitud proviene del formulario Pug
+  if (req.headers.accept?.includes("text/html")) {
+    return res.redirect("/clientes/vista?creado=1");
+  }
+
+  res.status(201).json({
+    mensaje: "Cliente creado exitosamente",
+    cliente: nuevoCliente,
+  });
 };
-
 
 // UPDATE
 const actualizarCliente = (req, res) => {
-    const clientes = leerClientes();
-    const id = parseInt(req.params.id);
-    const cliente = clientes.find(p => p.id === id);
+  const id = parseInt(req.params.id);
 
-    if (!cliente) {
-        return res.status(404).json({
-            mensaje: "Cliente no encontrado"
-        });
-    }
-   
-    
-    // actualizar los campos del cliente
-    const { nombre, apellido, email, telefono } = req.body;
-
-    cliente.nombre = nombre ?? cliente.nombre;
-    cliente.apellido = apellido ?? cliente.apellido;
-    cliente.email = email ?? cliente.email;
-    cliente.telefono = telefono ?? cliente.telefono;
-
-   
-    guardarClientes(clientes);
-
-    res.json({
-        mensaje: "Cliente actualizado exitosamente",
-        cliente
+  if (isNaN(id)) {
+    return res.status(400).json({
+      mensaje: "El ID proporcionado no es válido",
     });
+  }
 
+  const clientes = leerClientes();
+  const cliente = clientes.find((p) => p.id === id);
+
+  if (!cliente) {
+    return res.status(404).json({
+      mensaje: "Cliente no encontrado",
+    });
+  }
+
+  const { nombre, apellido, email, telefono } = req.body;
+
+  // Validar que al menos se envíe un campo para actualizar
+  if (!nombre && !apellido && !email && !telefono) {
+    return res.status(400).json({
+      mensaje:
+        "Debe enviar al menos un campo para actualizar (nombre, apellido, email o telefono)",
+    });
+  }
+
+  // Validar que no se envíen campos en blanco
+  if (
+    (nombre !== undefined && nombre.trim() === "") ||
+    (apellido !== undefined && apellido.trim() === "") ||
+    (email !== undefined && email.trim() === "") ||
+    (telefono !== undefined && telefono.trim() === "")
+  ) {
+    return res.status(400).json({
+      mensaje: "Los campos a actualizar no pueden contener valores vacíos",
+    });
+  }
+
+  // Validar teléfono numérico 
+  if (telefono !== undefined) {
+    const soloNumeros = /^\d+$/;
+    if (!soloNumeros.test(telefono.trim())) {
+      return res.status(400).json({
+        mensaje: "El teléfono debe contener únicamente números",
+      });
+    }
+  }
+
+  // Actualizar los campos del cliente solo si se proporcionan
+  cliente.nombre = nombre ? nombre.trim() : cliente.nombre;
+  cliente.apellido = apellido ? apellido.trim() : cliente.apellido;
+  cliente.email = email ? email.trim().toLowerCase() : cliente.email;
+  cliente.telefono = telefono ? telefono.trim() : cliente.telefono;
+
+  guardarClientes(clientes);
+
+  res.json({
+    mensaje: "Cliente actualizado exitosamente",
+    cliente,
+  });
 };
-
 
 // DELETE
 const eliminarCliente = (req, res) => {
-    const clientes = leerClientes();
-    const id = parseInt(req.params.id);
-    const nuevosClientes = clientes.filter(p => p.id !== id);
+  const id = parseInt(req.params.id);
 
-    // Verificar si se eliminó algún cliente
-    if (clientes.length === nuevosClientes.length) {
-        return res.status(404).json({
-            mensaje: "Cliente no encontrado"
-        });
-
-    }
-
-    guardarClientes(nuevosClientes);
-
-    res.json({
-        mensaje: "Cliente eliminado exitosamente"
+  if (isNaN(id)) {
+    return res.status(400).json({
+      mensaje: "El ID proporcionado no es válido",
     });
+  }
+
+  const clientes = leerClientes();
+  const nuevosClientes = clientes.filter((p) => p.id !== id);
+ // Validar si se eliminó algún cliente
+  if (clientes.length === nuevosClientes.length) {
+    return res.status(404).json({
+      mensaje: "Cliente no encontrado",
+    });
+  }
+
+  guardarClientes(nuevosClientes);
+
+  res.json({
+    mensaje: "Cliente eliminado exitosamente",
+  });
 };
 
 //Mostrar vistas
 const mostrarClientesVista = (req, res) => {
   const clientes = leerClientes();
-
-  res.render("clientes", { clientes });
+  const mensaje = req.query.creado === "1" ? "Cliente registrado exitosamente." : null;
+  res.render("clientes", { clientes, mensaje });
 };
 
 const mostrarNuevoClienteVista = (req, res) => {

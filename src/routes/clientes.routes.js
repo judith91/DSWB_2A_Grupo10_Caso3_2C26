@@ -1,5 +1,4 @@
 const express = require("express");
-
 const router = express.Router();
 
 // importar controladores
@@ -14,11 +13,11 @@ const {
 
 } = require("../controllers/clientes.controllers");
 
-//vistas de clientes
+//Rutas para vistas (Pug / HTML)
 router.get("/vista", mostrarClientesVista);
 router.get("/nuevo", mostrarNuevoClienteVista);
 
-// rutas CRUD
+// Rutas de la API REST (JSON)
 router.get("/", obtenerClientes);         // GET /clientes  
 router.get("/:id", obtenerClientePorId);  // GET /clientes/:id
 router.post("/", crearCliente);           // POST /clientes

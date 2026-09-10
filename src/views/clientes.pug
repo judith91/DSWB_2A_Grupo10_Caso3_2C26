@@ -8,6 +8,9 @@ block content
       | Consultá la información de los clientes registrados.
     a.boton.boton--nuevo(href="/clientes/nuevo") + Nuevo Cliente
 
+  if mensaje
+    p.mensaje-exito= mensaje
+
   .eventos-grid
     each cliente in clientes
       article.evento-card
