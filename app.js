@@ -4,6 +4,7 @@ const path = require("path");
 
 const eventoRoutes = require("./src/routes/eventos.routes");
 const clienteRoutes = require("./src/routes/clientes.routes");
+const salasRoutes = require("./src/routes/salas.routes");
 
 const app = express();
 app.set("view engine", "pug");
@@ -28,6 +29,7 @@ app.use((req, res, next) => {
 // Rutas
 app.use("/eventos", eventoRoutes);
 app.use("/clientes", clienteRoutes);
+app.use("/salas", salasRoutes);
 
 
 app.listen(PORT, () => {
