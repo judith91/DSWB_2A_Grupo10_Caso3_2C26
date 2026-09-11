@@ -54,6 +54,7 @@ const obtenerEventos = (req, res) => {
 // GET BY ID (API)
 const obtenerEventoPorId = (req, res) => {
   const eventos = leerEventos();
+  actualizarEstados(eventos);
   const id = parseInt(req.params.id);
   const evento = eventos.find((e) => e.id === id);
 
@@ -137,7 +138,7 @@ const crearEvento = (req, res) => {
   guardarEventos(eventos);
 
   if (req.headers.accept?.includes("text/html")) {
-    return res.redirect("/eventos/vista");
+    return res.redirect("/eventos/vista?creado=1");
   }
 
   res.status(201).json({
@@ -148,8 +149,15 @@ const crearEvento = (req, res) => {
 
 // UPDATE
 const actualizarEvento = (req, res) => {
-  const eventos = leerEventos();
   const id = parseInt(req.params.id);
+
+  if (isNaN(id)) {
+    return res.status(400).json({
+      mensaje: "El ID proporcionado no es válido",
+    });
+  }
+
+  const eventos = leerEventos();
   const evento = eventos.find((e) => e.id === id);
 
   if (!evento) {
@@ -160,20 +168,76 @@ const actualizarEvento = (req, res) => {
 
   const { titulo, descripcion, fecha, hora, salaId, estado } = req.body;
 
+  // Validar que al menos se envíe un campo para actualizar
+  if (
+    !titulo &&
+    !descripcion &&
+    !fecha &&
+    !hora &&
+    salaId === undefined &&
+    !estado
+  ) {
+    return res.status(400).json({
+      mensaje:
+        "Debe enviar al menos un campo para actualizar (titulo, descripcion, fecha, hora, salaId o estado)",
+    });
+  }
+
+  // Validar que los campos de texto no estén vacíos
+  if (
+    (titulo !== undefined && titulo.trim() === "") ||
+    (descripcion !== undefined && descripcion.trim() === "") ||
+    (fecha !== undefined && fecha.trim() === "") ||
+    (hora !== undefined && hora.trim() === "") ||
+    (estado !== undefined && estado.trim() === "")
+  ) {
+    return res.status(400).json({
+      mensaje: "Los campos a actualizar no pueden contener valores vacíos",
+    });
+  }
+
+  // Validar que la sala exista
+  if (salaId !== undefined) {
+    const salas = leerSalas();
+    const idSala = Number(salaId);
+
+    const sala = salas.find((s) => s.id === idSala);
+
+    if (!sala) {
+      return res.status(404).json({
+        mensaje: "La sala no existe",
+      });
+    }
+  }
+
+  // Validar estado
+  if (estado !== undefined) {
+    const estadosValidos = ["activo", "lleno", "finalizado"];
+
+    if (!estadosValidos.includes(estado)) {
+      return res.status(400).json({
+        mensaje: "El estado del evento no es válido",
+      });
+    }
+  }
+
+  // Actualizar solo los campos que se proporcionan
   evento.titulo = titulo ?? evento.titulo;
   evento.descripcion = descripcion ?? evento.descripcion;
   evento.fecha = fecha ?? evento.fecha;
   evento.hora = hora ?? evento.hora;
-  evento.salaId = salaId ? Number(salaId) : evento.salaId;
+  evento.salaId =
+    salaId !== undefined ? Number(salaId) : evento.salaId;
   evento.estado = estado ?? evento.estado;
 
   guardarEventos(eventos);
 
   res.json({
-    mensaje: "Evento actualizado",
+    mensaje: "Evento actualizado exitosamente",
     evento,
   });
 };
+
 
 // DELETE
 const eliminarEvento = (req, res) => {
@@ -197,9 +261,8 @@ const eliminarEvento = (req, res) => {
 //Mostrar vistas
 const mostrarEventosVista = (req, res) => {
   const eventos = leerEventos();
-  const salas = leerSalas();
-
-  res.render("eventos", { eventos, salas });
+  const mensaje = req.query.creado === "1" ? "Evento creado exitosamente." : null;
+  res.render("eventos", { eventos, mensaje });
 };
 
 const mostrarNuevoEventoVista = (req, res) => {

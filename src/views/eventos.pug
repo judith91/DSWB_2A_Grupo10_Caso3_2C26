@@ -8,6 +8,11 @@ block content
       | Consultá los eventos disponibles y la información de cada uno.
     a.boton.boton--nuevo(href="/eventos/nuevo") + Crear nuevo evento
 
+  if mensaje
+    p.mensaje-exito= mensaje
+    script.
+      history.replaceState(null, "", "/eventos/vista")
+
   .eventos-grid
     each evento in eventos
       article.evento-card
