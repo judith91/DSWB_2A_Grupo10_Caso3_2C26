@@ -221,6 +221,26 @@ const actualizarEvento = (req, res) => {
     }
   }
 
+    // Validar que no exista otro evento con la misma sala, fecha y hora
+  const nuevaSalaId =
+    salaId !== undefined ? Number(salaId) : evento.salaId;
+  const nuevaFecha = fecha !== undefined ? fecha : evento.fecha;
+  const nuevaHora = hora !== undefined ? hora : evento.hora;
+
+  const conflicto = eventos.find(
+    (e) =>
+      e.id !== id &&
+      e.salaId === nuevaSalaId &&
+      e.fecha === nuevaFecha &&
+      e.hora === nuevaHora
+  );
+
+  if (conflicto) {
+    return res.status(400).json({
+      mensaje: "Ya existe otro evento en esa sala, fecha y hora",
+    });
+  }
+
   // Actualizar solo los campos que se proporcionan
   evento.titulo = titulo ?? evento.titulo;
   evento.descripcion = descripcion ?? evento.descripcion;
