@@ -127,6 +127,7 @@ JSON
 ### Módulo de Eventos (/eventos)
 * GET /eventos - Obtener todos los eventos (actualiza automáticamente el estado a finalizado si ya transcurrieron).
 * GET /eventos/:id - Obtener evento por ID.
+* GET /eventos/proximos - Consulta de negocio: devuelve los eventos cuya fecha y hora aún no transcurrieron, ordenados cronológicamente.
 * POST /eventos - Crear un nuevo evento (valida existencia de la sala y previene solapamientos de horario).
  ```text
 {
@@ -167,5 +168,5 @@ JSON
 ## Próximos Pasos (Segunda y Tercera Entrega)
 * Incorporación del módulo de Entradas y Reservas con control de aforo por capacidad máxima de sala. 
 * Funcionalidad de Cancelación de Entradas con liberación de vacantes.
-* Implementación de endpoints de Consultas y Reportes.
+* Implementación de consultas de negocio dependientes del módulo de Entradas: entradas vendidas y entradas disponibles por evento.
 * Migración de persistencia de archivos JSON hacia base de datos MongoDB.
