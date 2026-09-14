@@ -51,6 +51,23 @@ const obtenerEventos = (req, res) => {
   res.json(eventos);
 };
 
+// GET eventos próximos (consulta de negocio)
+const obtenerEventosProximos = (req, res) => {
+  const eventos = leerEventos();
+  actualizarEstados(eventos);
+
+  const ahora = new Date();
+
+  const proximos = eventos
+    .filter((e) => new Date(`${e.fecha}T${e.hora}`) > ahora)
+    .sort(
+      (a, b) =>
+        new Date(`${a.fecha}T${a.hora}`) - new Date(`${b.fecha}T${b.hora}`),
+    );
+
+  res.json(proximos);
+};
+
 // GET BY ID (API)
 const obtenerEventoPorId = (req, res) => {
   const eventos = leerEventos();
@@ -101,12 +118,12 @@ const crearEvento = (req, res) => {
     });
   }
 
-   // Validar que no haya otro evento en la misma sala, fecha y hora
+  // Validar que no haya otro evento en la misma sala, fecha y hora
   const conflicto = eventos.find(
     (evento) =>
       evento.salaId === idSala &&
       evento.fecha === fecha &&
-      evento.hora === hora
+      evento.hora === hora,
   );
 
   if (conflicto) {
@@ -119,7 +136,7 @@ const crearEvento = (req, res) => {
   const nuevoId =
     eventos.reduce(
       (mayor, evento) => (evento.id > mayor ? evento.id : mayor),
-      0
+      0,
     ) + 1;
 
   // Crear evento nuevo
@@ -130,7 +147,7 @@ const crearEvento = (req, res) => {
     fecha,
     hora,
     idSala,
-    estado
+    estado,
   );
 
   eventos.push(nuevoEvento);
@@ -221,9 +238,8 @@ const actualizarEvento = (req, res) => {
     }
   }
 
-    // Validar que no exista otro evento con la misma sala, fecha y hora
-  const nuevaSalaId =
-    salaId !== undefined ? Number(salaId) : evento.salaId;
+  // Validar que no exista otro evento con la misma sala, fecha y hora
+  const nuevaSalaId = salaId !== undefined ? Number(salaId) : evento.salaId;
   const nuevaFecha = fecha !== undefined ? fecha : evento.fecha;
   const nuevaHora = hora !== undefined ? hora : evento.hora;
 
@@ -232,7 +248,7 @@ const actualizarEvento = (req, res) => {
       e.id !== id &&
       e.salaId === nuevaSalaId &&
       e.fecha === nuevaFecha &&
-      e.hora === nuevaHora
+      e.hora === nuevaHora,
   );
 
   if (conflicto) {
@@ -246,8 +262,7 @@ const actualizarEvento = (req, res) => {
   evento.descripcion = descripcion ?? evento.descripcion;
   evento.fecha = fecha ?? evento.fecha;
   evento.hora = hora ?? evento.hora;
-  evento.salaId =
-    salaId !== undefined ? Number(salaId) : evento.salaId;
+  evento.salaId = salaId !== undefined ? Number(salaId) : evento.salaId;
   evento.estado = estado ?? evento.estado;
 
   guardarEventos(eventos);
@@ -257,7 +272,6 @@ const actualizarEvento = (req, res) => {
     evento,
   });
 };
-
 
 // DELETE
 const eliminarEvento = (req, res) => {
@@ -281,7 +295,8 @@ const eliminarEvento = (req, res) => {
 //Mostrar vistas
 const mostrarEventosVista = (req, res) => {
   const eventos = leerEventos();
-  const mensaje = req.query.creado === "1" ? "Evento creado exitosamente." : null;
+  const mensaje =
+    req.query.creado === "1" ? "Evento creado exitosamente." : null;
   res.render("eventos", { eventos, mensaje });
 };
 
@@ -299,4 +314,5 @@ module.exports = {
   eliminarEvento,
   mostrarEventosVista,
   mostrarNuevoEventoVista,
+  obtenerEventosProximos,
 };

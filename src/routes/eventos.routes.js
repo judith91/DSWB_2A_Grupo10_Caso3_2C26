@@ -9,6 +9,7 @@ const {
   eliminarEvento,
   mostrarEventosVista,
   mostrarNuevoEventoVista,
+   obtenerEventosProximos,
 } = require("../controllers/eventos.controllers");
 
 //Vistas de eventos
@@ -16,6 +17,7 @@ router.get("/vista", mostrarEventosVista);
 router.get("/nuevo", mostrarNuevoEventoVista);
 
 router.get("/", obtenerEventos);
+router.get("/proximos", obtenerEventosProximos);
 router.get("/:id", obtenerEventoPorId);
 router.post("/", crearEvento);
 router.put("/:id", actualizarEvento);
