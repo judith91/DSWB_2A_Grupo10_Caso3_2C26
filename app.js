@@ -13,10 +13,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const PORT = process.env.PORT || 3000
 
-app.get("/", (req, res) => {
-    res.send("Urbana Cult");
-});
-
 
 // Middlewares
 app.use(express.json());
@@ -26,10 +22,24 @@ app.use((req, res, next) => {
     next();
 });
 
+
+app.get("/", (req, res) => {
+    res.send("Urbana Cult");
+});
+
+
 // Rutas
 app.use("/eventos", eventoRoutes);
 app.use("/clientes", clienteRoutes);
 app.use("/salas", salasRoutes);
+
+
+// Manejador 404 para rutas inexistentes
+app.use((req, res) => {
+  res.status(404).json({
+    mensaje: "Ruta no encontrada"
+  });
+});
 
 
 app.listen(PORT, () => {
