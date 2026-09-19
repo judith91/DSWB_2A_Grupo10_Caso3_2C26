@@ -1,6 +1,6 @@
 
 
-Proyecto DSWB - Grupo 10 - Caso 3 - 2C26
+Proyecto DSWB - SixForge Labs - Grupo 10 - Caso 3 - 2C26
 # Urbana Cult - Gestión de Eventos Culturales
 
 **Materia:** Desarrollo de Sistemas Web - Back End (DSWB)  
@@ -31,7 +31,7 @@ Para esta **Primera Entrega**, el sistema resuelve el núcleo del negocio median
 ## Estructura del Proyecto
 
 ```text
-DSWB_2A_Grupo1_Caso3_2C26/
+DSWB_2A_Grupo10_Caso3_2C26/
 ├── data/
 │   ├── clientes.json
 │   ├── eventos.json
@@ -91,7 +91,7 @@ DSWB_2A_Grupo1_Caso3_2C26/
     npm start
  
     # O en modo desarrollo:
-    node app.js
+    npm run dev
    ```
 El servidor quedará a la escucha en: http://localhost:3000
 
